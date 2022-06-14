@@ -4,3 +4,5 @@ synth.v
 *.dot
 *.dot.pid
 *.vcd
+*.swp
+*.swo

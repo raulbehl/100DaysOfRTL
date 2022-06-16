@@ -6,3 +6,4 @@ synth.v
 *.vcd
 *.swp
 *.swo
+*.gtkw

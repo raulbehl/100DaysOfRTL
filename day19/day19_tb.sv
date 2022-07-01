@@ -1,81 +1,81 @@
-// Parameterized fifo
+// Fifo TB
 
-module day19_tb #(
-  parameter DEPTH   = 4,
-  parameter DATA_W  = 1
-)(
-  input         wire              clk,
-  input         wire              reset,
+module day19_tb ();
 
-  input         wire              push_i,
-  input         wire[DATA_W-1:0]  push_data_i,
+  parameter DATA_W = 16;
+  parameter DEPTH  = 8;
 
-  input         wire              pop_i,
-  output        wire[DATA_W-1:0]  pop_data_o,
+  logic              clk;
+  logic              reset;
 
-  output        wire              full_o,
-  output        wire              empty_o
-);
+  logic              push_i;
+  logic[DATA_W-1:0]  push_data_i;
 
-  typedef enum logic[1:0] {ST_PUSH = 2'b01,
-                           ST_POP  = 2'b10,
-                           ST_BOTH = 2'b11} fifo_state_t;
+  logic              pop_i;
+  logic[DATA_W-1:0]  pop_data_o;
 
-  parameter PTR_W = $clog2(DEPTH);
+  logic              full_o;
+  logic              empty_o;
 
-  logic [PTR_W:0] nxt_rd_ptr;
-  logic [PTR_W:0] rd_ptr_q;
-  logic [PTR_W:0] nxt_wr_ptr;
-  logic [PTR_W:0] wr_ptr_q;
+  // Instantiate the RTL
+  day19 #(.DEPTH(DEPTH), .DATA_W(DATA_W)) DAY19 (.*);
 
-  logic [DATA_W-1:0] fifo_pop_data;
-
-  assign pop_data_o = fifo_pop_data;
-
-  // Fifo storage
-  logic [DEPTH-1:0] [DATA_W-1:0] fifo_mem;
-
-  // Flops for pointer
-  always_ff @(posedge clk or posedge reset)
-    if (reset) begin
-      rd_ptr_q <= {PTR_W+1{1'b0}};
-      wr_ptr_q <= {PTR_W+1{1'b0}};
-    end else begin
-      rd_ptr_q <= nxt_rd_ptr;
-      wr_ptr_q <= nxt_wr_ptr;
-    end
-
-  // Fifo state based on push/pop
-  always_comb begin
-    nxt_rd_ptr = rd_ptr_q;
-    nxt_wr_ptr = wr_ptr_q;
-    fifo_pop_data = fifo_mem[rd_ptr_q[PTR_W-1:0]];
-    case ({pop_i, push_i})
-      ST_PUSH: begin
-        // Increment the write pointer
-        nxt_wr_ptr = wr_ptr_q + {{PTR_W{1'b0}}, 1'b1};
-      end
-      ST_POP: begin
-        // Increment the read pointer
-        nxt_rd_ptr = rd_ptr_q + {{PTR_W{1'b0}}, 1'b1};
-        // Drive the pop data
-        fifo_pop_data = fifo_mem[rd_ptr_q[PTR_W-1:0]];
-      end
-      ST_BOTH: begin
-        // Don't need to increment the pointer
-      end
-    endcase
+  // Generate clock
+  always begin
+    clk = 1'b1;
+    #5;
+    clk = 1'b0;
+    #5;
   end
 
-  // Flops for fifo storage
-  always_ff @(posedge clk)
-    if (push_i)
-      fifo_mem[wr_ptr_q[PTR_W-1:0]] <= push_data_i;
+  // Drive stimulus
+  initial begin
+    reset   <= 1'b1;
+    push_i  <= 1'b0;
+    pop_i   <= 1'b0;
+    @(posedge clk);
+    reset   <= 1'b0;
+    @(posedge clk);
+    @(posedge clk);
+    // Make fifo full
+    for (int i=0; i<DEPTH; i++) begin
+      push_i      <= 1'b1;
+      push_data_i <= $urandom_range(0, 2**DATA_W-1);
+      @(posedge clk);
+    end
+    push_i <= 1'b0;
+    @(posedge clk);
+    @(posedge clk);
+    // Make fifo empty
+    for (int i=0; i<DEPTH; i++) begin
+      pop_i      <= 1'b1;
+      @(posedge clk);
+    end
+    pop_i <= 1'b0;
+    @(posedge clk);
+    @(posedge clk);
+    push_i      <= 1'b1;
+    push_data_i <= $urandom_range(0, 2**DATA_W-1);
+    @(posedge clk);
+    push_i      <= 1'b0;
+    // Push and pop both
+    for (int i=0; i<DEPTH; i++) begin
+      push_i      <= 1'b1;
+      pop_i       <= 1'b1;
+      push_data_i <= $urandom_range(0, 2**DATA_W-1);
+      @(posedge clk);
+    end
+    pop_i <= 1'b0;
+    push_i<= 1'b0;
+    @(posedge clk);
+    @(posedge clk);
+    $finish();
+  end
 
-  // Full when wrap bits are not equal
-  assign full_o = (rd_ptr_q[PTR_W] != wr_ptr_q[PTR_W]) &
-                  (rd_ptr_q[PTR_W-1:0] == wr_ptr_q[PTR_W-1:0]);
-
-  assign empty_o = (rd_ptr_q[PTR_W:0] == wr_ptr_q[PTR_W:0]);
+  // Dump vcd
+  initial begin
+    $dumpfile("day19.vcd");
+    $dumpvars(0, day19_tb);
+  end
 
 endmodule

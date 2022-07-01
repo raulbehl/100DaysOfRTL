@@ -62,7 +62,8 @@ module day19 #(
         fifo_pop_data = fifo_mem[rd_ptr_q[PTR_W-1:0]];
       end
       ST_BOTH: begin
-        // Don't need to increment the pointer
+        nxt_wr_ptr = wr_ptr_q + {{PTR_W{1'b0}}, 1'b1};
+        nxt_rd_ptr = rd_ptr_q + {{PTR_W{1'b0}}, 1'b1};
       end
     endcase
   end

@@ -8,3 +8,4 @@ synth.v
 *.swo
 *.gtkw
 slpp_all/
+*_build/

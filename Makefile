@@ -5,6 +5,7 @@ BASEDIR = $(shell pwd)
 TOOLCMD = iverilog -o sim.vvp -Wall -Winfloop -Wno-timescale -gno-shared-loop-index -g2012
 
 compile: clean
+	cd "$(BASEDIR)/$(DAY)"; \
 	$(TOOLCMD) -s $(DAY) $(DAY).sv
 
 sim: clean

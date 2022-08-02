@@ -42,6 +42,7 @@ module day16 (
       ST_ACCESS : begin
         if (pready_i) nxt_state = ST_IDLE;
       end
+      default   : nxt_state = state_q;
     endcase
   end
 

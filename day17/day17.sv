@@ -6,14 +6,18 @@ module day17 (
 
   input       wire        req_i,
   input       wire        req_rnw_i,    // 1 - read, 0 - write
-  input       wire[9:0]   req_addr_i,
+  input       wire[3:0]   req_addr_i,
   input       wire[31:0]  req_wdata_i,
   output      wire        req_ready_o,
   output      wire[31:0]  req_rdata_o
 );
 
   // Memory array
-  logic [1023:0][31:0] mem;
+`ifdef FORMAL
+  logic [31:0] mem[15:0];
+`else
+  logic [15:0][31:0] mem;
+`endif
 
   logic mem_rd;
   logic mem_wr;

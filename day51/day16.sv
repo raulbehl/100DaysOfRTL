@@ -5,6 +5,8 @@
 //  - 2'b01 - Read from address 0xDEAD_CAFE
 //  - 2'b10 - Increment the previously read data and store it to 0xDEAD_CAFE
 
+`include "prim_assert.sv"
+
 module day16 (
   input       wire        clk,
   input       wire        reset,
@@ -58,5 +60,43 @@ module day16 (
       rdata_q <= 32'h0;
     else if (penable_o && pready_i)
       rdata_q <= prdata_i;
+
+`ifdef FORMAL
+
+  // Assume reset is high for the first cycle
+  logic rst_for_cycle = 1'b0;
+
+  always_ff @(posedge clk) begin
+    rst_for_cycle <= 1'b1;
+
+    assume (rst_for_cycle ^ reset);
+  end
+
+  // Assume cmd_i remains stable until pready is seen
+  `ASSUME(cmd_stable, `IMPLIES(~pready_i | ~penable_o, $stable(cmd_i)))
+  // Assume cmd_i is a valid value
+  `ASSUME(cmd_valid, `IMPLIES(~pready_i | ~penable_o, (cmd_i != 2'b11)))
+  // Assert cmd_i is behaving correctly
+  //  - 2'b00 - No-op
+  //  - 2'b01 - Read from address 0xDEAD_CAFE
+  //  - 2'b10 - Increment the previously read data and store it to 0xDEAD_CAFE
+  `ASSERT(cmd_chk0, `IMPLIES((cmd_i == 2'b10) & penable_o & ~pready_i, pwrite_o))
+  `ASSERT(cmd_chk1, `IMPLIES((cmd_i == 2'b01) & penable_o & ~pready_i, ~pwrite_o))
+
+  logic asrt_psel_rose;
+
+  always_ff @(posedge clk)
+    asrt_psel_rose <= $rose(psel_o);
+
+  // Assert that penable is asserted one cycle after psel
+  `ASSERT(penable_chk, `IMPLIES($rose(penable_o), (asrt_psel_rose)))
+
+  // Check psel, penable, pwrite, pwdata and paddr are stable until pready is seen
+  `ASSERT(psel_stable, `IMPLIES(penable_o & ~pready_i, $stable(psel_o)))
+  `ASSERT(pwrite_stable, `IMPLIES(penable_o & ~pready_i, $stable(pwrite_o)))
+  `ASSERT(pwdata_stable, `IMPLIES(penable_o & ~pready_i, $stable(pwdata_o)))
+  `ASSERT(paddr_stable, `IMPLIES(penable_o & ~pready_i, $stable(paddr_o)))
+
+`endif
 
 endmodule

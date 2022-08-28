@@ -1,0 +1,121 @@
++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++       REPORT INFO       ++++++++++
++++++++++++++++++++++++++++++++++++++++++++++
+
+
+SUMMARY
+================================================
+|     Property     |           Value           |
+================================================
+| User             | runner                    |
+| Host             | ff383db45322              |
+| Tool             | Riviera-PRO 2022.04       |
+| Report file      | /home/runner/coverage.txt |
+| Report date      | 2022-08-28 06:11          |
+| Report arguments |                           |
+| Input file       | /home/runner/fcover.acdb  |
+| Input file date  | 2022-08-28 06:11          |
+| Number of tests  | 1                         |
+================================================
+
+
+TEST DETAILS
+==============================================
+| Property |              Value              |
+==============================================
+| Test     | fcover.acdb:fcover              |
+| Status   | Warning                         |
+| Args     | asim +access+r                  |
+| Simtime  | 6355 ns                         |
+| Cputime  | 1.201 s                         |
+| Seed     | 1                               |
+| Date     | 2022-08-28 06:11                |
+| User     | runner                          |
+| Host     | ff383db45322                    |
+| Host os  | Linux64                         |
+| Tool     | Riviera-PRO 2022.04 (simulator) |
+==============================================
+
+
++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++     DESIGN HIERARCHY    ++++++++++
++++++++++++++++++++++++++++++++++++++++++++++
+
+
+CUMULATIVE SUMMARY
+=============================================
+|    Coverage Type    | Weight | Hits/Total |
+=============================================
+| Covergroup Coverage |      1 |    77.083% |
+|---------------------|--------|------------|
+| Types               |        |      0 / 1 |
+=============================================
+CUMULATIVE INSTANCE-BASED COVERAGE: 77.083%
+COVERED INSTANCES: 0 / 1
+FILES: 1
+
+
+CLASS - /\package apb_master_pkg\/apb_master_coverage : work.apb_master_pkg/\apb_master_pkg apb_master_coverage \
+
+
+    SUMMARY
+    =============================================
+    |    Coverage Type    | Weight | Hits/Total |
+    =============================================
+    | Covergroup Coverage |      1 |    77.083% |
+    |---------------------|--------|------------|
+    | Types               |        |      0 / 1 |
+    =============================================
+    WEIGHTED AVERAGE LOCAL: 77.083%
+
+
+    COVERGROUP COVERAGE
+    =====================================================================================================
+    |                            Covergroup                            |  Hits   |  Goal /  |  Status   |
+    |                                                                  |         | At Least |           |
+    =====================================================================================================
+    | TYPE /\package apb_master_pkg\/apb_master_coverage/apb_master_cg | 77.083% | 100.000% | Uncovered |
+    =====================================================================================================
+
+
++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++       DESIGN UNITS      ++++++++++
++++++++++++++++++++++++++++++++++++++++++++++
+
+
+CUMULATIVE SUMMARY
+=============================================
+|    Coverage Type    | Weight | Hits/Total |
+=============================================
+| Covergroup Coverage |      1 |    77.083% |
+|---------------------|--------|------------|
+| Types               |        |      0 / 1 |
+=============================================
+CUMULATIVE DESIGN-BASED COVERAGE: 77.083%
+COVERED DESIGN UNITS: 0 / 1
+FILES: 1
+
+
+CLASS - work.apb_master_pkg/\apb_master_pkg apb_master_coverage \
+
+
+    SUMMARY
+    =============================================
+    |    Coverage Type    | Weight | Hits/Total |
+    =============================================
+    | Covergroup Coverage |      1 |    77.083% |
+    |---------------------|--------|------------|
+    | Types               |        |      0 / 1 |
+    =============================================
+    WEIGHTED AVERAGE: 77.083%
+
+
+    COVERGROUP COVERAGE
+    =====================================================================================================
+    |                            Covergroup                            |  Hits   |  Goal /  |  Status   |
+    |                                                                  |         | At Least |           |
+    =====================================================================================================
+    | TYPE /\package apb_master_pkg\/apb_master_coverage/apb_master_cg | 77.083% | 100.000% | Uncovered |
+    =====================================================================================================
+
+

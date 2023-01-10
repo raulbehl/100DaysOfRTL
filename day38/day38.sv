@@ -22,7 +22,7 @@ module day38();
   end
       
   task automatic print(int i);
-	automatic int rand_delay;
+    automatic int rand_delay;
     rand_delay = $urandom_range(1, 10);
     #rand_delay;
     $display("%t Thread[%0d] finished", $time, i);

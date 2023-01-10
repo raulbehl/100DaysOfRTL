@@ -32,7 +32,7 @@ Here's the link to the [launch post](https://www.linkedin.com/posts/raulbehl_100
 |18 | | [Day 18 - RTL APB Slave](https://github.com/raulbehl/100DaysOfRTL/tree/main/day18)                                                              |
 |19 | https://www.edaplayground.com/x/cYBK | [Day 19](https://github.com/raulbehl/100DaysOfRTL/tree/main/day19)                                       |
 |20 | https://www.edaplayground.com/x/tQD2 | [Day 20 - RTL APB System](https://github.com/raulbehl/100DaysOfRTL/tree/main/day20)                      |
-|21 | | [Day 21 - TB Introduction](https://github.com/raulbehl/100DaysOfRTL/tree/main/day21)                                                            |
+|21 | https://youtu.be/pFO-qRhQbVM | [Day 21 - TB Introduction](https://github.com/raulbehl/100DaysOfRTL/tree/main/day21)                                                            |
 |22 | https://www.edaplayground.com/x/7dHV | [Day 22 - TB Hello World using SV Classes](https://github.com/raulbehl/100DaysOfRTL/tree/main/day22)     |
 |23 | https://www.edaplayground.com/x/QVXi | [Day 23 - TB Interfaces](https://github.com/raulbehl/100DaysOfRTL/tree/main/day23)                       |
 |24 | https://www.edaplayground.com/x/q_dg | [Day 24 - TB Virtual Interfaces](https://github.com/raulbehl/100DaysOfRTL/tree/main/day24)               |

@@ -83,9 +83,12 @@ module day19 #(
 
 `ifdef FORMAL
 
-  // Reset for a cycle
-  logic rst_for_a_cycle = 1'b0;
+  logic                   rst_for_a_cycle = 1'b0;
+  logic [$clog2(DEPTH):0] entry_count_q;
+  logic [DATA_W-1:0]      track_push_data_q;
+  logic [DATA_W-1:0]      track_wr_ptr_q;
 
+  // Reset for a cycle
   always @(posedge clk) begin
     rst_for_a_cycle <= 1'b1;
 
@@ -93,28 +96,42 @@ module day19 #(
   end
 
   // Logic to count the number of entries in the fifo
-  logic [$clog2(DEPTH):0] entry_count_q;
-
   always_ff @(posedge clk or posedge reset)
     if (reset)
       entry_count_q <= {($clog2(DEPTH)+1){1'b0}};
     else
       entry_count_q <= entry_count_q + push_i - pop_i;
 
-  // Full when the number entries pushed equal to the depth
-  `ASSERT(full_chk, `IMPLIES((entry_count_q == DEPTH), full_o))
+  // Logic to track push data and write pointer for data consistency check
+  always_ff @(posedge clk or posedge reset)
+    if (reset) begin
+      track_push_data_q <= {DATA_W{1'b0}};
+      track_wr_ptr_q    <= {(PTR_W+1){1'b0}};
+    end else if (push_i) begin
+      track_push_data_q <= push_data_i;
+      track_wr_ptr_q    <= wr_ptr_q;
+    end
 
-  // Full not asserted when entry count is not equal to depth
-  `ASSERT(full_chk2, `IMPLIES((entry_count_q != DEPTH), ~full_o))
-
-  // Empty when count is zero
-  `ASSERT(empty_chk, `IMPLIES((entry_count_q == '0), empty_o))
-
-  // Empty not asserted when count is non-zero
-  `ASSERT(empty_chk2, `IMPLIES((entry_count_q != '0), ~empty_o))
+  // Assumption that push can only happen if fifo is not full
+  `ASSUME(no_push_when_full, `IMPLIES(push_i, ~full_o))
 
   // Assumption that pop can only happen if fifo is no empty
-  `ASSUME(pop_assume, `IMPLIES(pop_i, ~empty_o))
+  `ASSUME(no_pop_when_empty, `IMPLIES(pop_i, ~empty_o))
+
+  // Full when the number entries pushed equal to the depth
+  `ASSERT(full_when_all_entries_occupied, `IMPLIES((entry_count_q == DEPTH), full_o))
+
+  // Full not asserted when entry count is not equal to depth
+  `ASSERT(not_full_when_atleast_one_entry_free, `IMPLIES((entry_count_q != DEPTH), ~full_o))
+
+  // Empty when count is zero
+  `ASSERT(full_when_no_entry_occupied, `IMPLIES((entry_count_q == '0), empty_o))
+
+  // Empty not asserted when count is non-zero
+  `ASSERT(not_empty_when_atleast_one_entry_occupied, `IMPLIES((entry_count_q != '0), ~empty_o))
+
+  // Data consistency check on pop_data
+  `ASSERT(push_pop_data_consistency, `IMPLIES(pop_i & (rd_ptr_q == track_wr_ptr_q), (track_push_data_q == pop_data_o)))
 
 `endif
 
